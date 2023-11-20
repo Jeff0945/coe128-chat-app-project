@@ -2,6 +2,7 @@ from socket import socket
 from models.message import Message
 from services.collection import Collection
 import communication
+import json
 
 
 class User(Collection):
@@ -18,8 +19,10 @@ class User(Collection):
         self.name = data.get("name")
         self.connection = data.get("connection")
 
-    def send_message(self, message):
-        communication.send_message(self.connection, message)
+    def send_json(self, data: dict):
+        json_data = json.dumps(data).encode()
+
+        communication.send_message(self.connection, json_data)
 
     def sent_messages(self, recipient_id: int | None = None):
         sent_messages = Message.where("sender_id", "=", self.id)
